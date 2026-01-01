@@ -2596,7 +2596,15 @@
             contactForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
+                const submitBtn = contactForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Sending...';
+                submitBtn.disabled = true;
+
                 const formData = new FormData(contactForm);
+                const name = formData.get('name');
+                const email = formData.get('email');
+                const message = formData.get('message');
 
                 try {
                     const response = await fetch('/', {
@@ -2615,19 +2623,33 @@
                                 formContainer.style.display = 'block';
                                 successMessage.style.display = 'none';
                                 contactForm.reset();
+                                submitBtn.textContent = originalText;
+                                submitBtn.disabled = false;
                             }, 300);
                         }, 2000);
                     } else {
                         throw new Error('Form submission failed');
                     }
                 } catch (error) {
-                    // Fallback to mailto if Netlify Forms fails
-                    const name = formData.get('name');
-                    const email = formData.get('email');
-                    const message = formData.get('message');
-                    const subject = encodeURIComponent('Whetstone Entertainment Inquiry');
-                    const body = encodeURIComponent(`From: ${name}\nEmail: ${email}\n\n${message}`);
-                    window.location.href = `mailto:j@whetstoneent.com?subject=${subject}&body=${body}`;
+                    console.log('Netlify form failed, using mailto fallback');
+                    // Show success message and open mailto
+                    formContainer.style.display = 'none';
+                    successMessage.style.display = 'block';
+
+                    const subject = encodeURIComponent('Whetstone Entertainment Inquiry from ' + name);
+                    const body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message);
+                    window.open('mailto:j@whetstoneent.com?subject=' + subject + '&body=' + body, '_self');
+
+                    setTimeout(() => {
+                        closeModal();
+                        setTimeout(() => {
+                            formContainer.style.display = 'block';
+                            successMessage.style.display = 'none';
+                            contactForm.reset();
+                            submitBtn.textContent = originalText;
+                            submitBtn.disabled = false;
+                        }, 300);
+                    }, 2500);
                 }
             });
         });
