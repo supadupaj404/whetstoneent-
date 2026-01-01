@@ -882,8 +882,21 @@
         }
 
         @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px 20px;
+            }
+
             .nav-links {
-                display: none;
+                display: flex;
+                gap: 16px;
+                font-size: 10px;
+            }
+
+            .nav-link {
+                font-size: 10px;
+                letter-spacing: 1px;
             }
 
             .hero,
@@ -893,6 +906,29 @@
             .credits-section,
             .contact-section {
                 padding: 80px 24px;
+            }
+
+            .hero-content {
+                padding: 0 10px;
+            }
+
+            .hero-title {
+                font-size: 42px;
+                letter-spacing: 0.02em;
+            }
+
+            .hero-title-sub {
+                font-size: 18px;
+            }
+
+            .hero-tagline {
+                font-size: 11px;
+                letter-spacing: 3px;
+            }
+
+            .hero-description {
+                font-size: 15px;
+                padding: 0 10px;
             }
 
             .stats-grid {
