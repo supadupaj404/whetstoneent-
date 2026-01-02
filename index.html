@@ -658,6 +658,16 @@
             color: var(--frost-shadow);
         }
 
+        .service-image {
+            width: 100%;
+            max-width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(76,175,80,0.15);
+        }
+
         /* ============================================
            CREDITS SECTION (MATRIX)
            ============================================ */
@@ -1050,153 +1060,72 @@
         }
 
         /* ============================================
-           GRAMMY NOMINATIONS SECTION
+           GRAMMY NOMINATIONS (within Services)
            ============================================ */
-        .grammy-section {
-            padding: 120px 40px;
-            background: linear-gradient(
-                135deg,
-                #1a1a2e 0%,
-                #16213e 50%,
-                #0f0f23 100%
-            );
-            position: relative;
-            overflow: hidden;
+        .grammy-header {
+            text-align: center;
+            margin-top: 80px;
+            margin-bottom: 40px;
         }
 
-        .grammy-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(ellipse at 30% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
-                        radial-gradient(ellipse at 70% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
-            pointer-events: none;
+        .grammy-header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 4px;
         }
 
-        .grammy-section .section-label {
-            color: #d4af37;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-        }
-
-        .grammy-section .section-title {
-            color: #fff;
-            background: linear-gradient(
-                180deg,
-                #fff 0%,
-                #d4af37 50%,
-                #b8960c 100%
-            );
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .grammy-section .section-description {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .grammy-grid {
+        .grammy-cards-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 30px;
-            margin-top: 60px;
-            position: relative;
-            z-index: 10;
         }
 
         .grammy-card {
-            background: linear-gradient(
-                135deg,
-                rgba(212, 175, 55, 0.1) 0%,
-                rgba(30, 30, 50, 0.9) 50%,
-                rgba(212, 175, 55, 0.05) 100%
-            );
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 20px;
-            overflow: hidden;
-            transition: all 0.4s ease;
+            padding: 56px 40px;
+            text-align: center;
+            transition: all 0.3s ease;
         }
 
         .grammy-card:hover {
             transform: translateY(-5px);
-            border-color: rgba(212, 175, 55, 0.6);
-            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.2);
+            box-shadow:
+                0 20px 50px rgba(76,175,80,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.8);
         }
 
-        .grammy-image {
+        .grammy-card-image {
             width: 100%;
-            height: 280px;
+            max-width: 260px;
+            height: 260px;
             object-fit: cover;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 16px;
+            margin-bottom: 28px;
+            box-shadow: 0 12px 32px rgba(76,175,80,0.2);
         }
 
-        .grammy-content {
-            padding: 32px;
-        }
-
-        .grammy-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            background: linear-gradient(135deg, #d4af37, #b8960c);
-            color: #1a1a2e;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-radius: 20px;
+        .grammy-card .service-title {
+            font-size: 16px;
             margin-bottom: 16px;
         }
 
-        .grammy-category {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 12px;
-            color: #d4af37;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-        }
-
-        .grammy-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-
-        .grammy-artist {
+        .grammy-card .service-description {
             font-size: 15px;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.6;
-        }
-
-        .grammy-artist strong {
-            color: #d4af37;
         }
 
         @media (max-width: 768px) {
-            .grammy-grid {
+            .grammy-cards-grid {
                 grid-template-columns: 1fr;
             }
 
-            .grammy-section {
-                padding: 80px 20px;
+            .grammy-header-title {
+                font-size: 24px;
             }
 
-            .grammy-image {
+            .grammy-card-image {
+                max-width: 220px;
                 height: 220px;
-            }
-
-            .grammy-content {
-                padding: 24px;
-            }
-
-            .grammy-title {
-                font-size: 18px;
             }
         }
 
@@ -1941,7 +1870,7 @@
     <!-- Navigation -->
     <nav class="nav" id="nav">
         <div class="nav-container">
-            <a href="#" class="nav-logo">Whetstone</a>
+            <a href="#" class="nav-logo">Whetstone ENT</a>
             <div class="nav-links">
                 <a href="#listen" class="nav-link">Listen</a>
                 <a href="#about" class="nav-link">About</a>
@@ -2243,37 +2172,30 @@
                     </p>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Grammy Nominations -->
-    <section class="grammy-section" id="grammy">
-        <div class="section-container">
-            <div class="section-header">
-                <div class="section-label">2026 Grammy Nominations</div>
-                <h2 class="section-title ice-title">Grammy Nominated</h2>
-                <p class="section-description">Proud to be recognized at the 2026 Grammy Awards</p>
+            <div class="grammy-header" id="grammy">
+                <h3 class="grammy-header-title ice-text">2026 Grammy Nominations</h3>
             </div>
 
-            <div class="grammy-grid">
-                <div class="grammy-card">
-                    <img src="t3f1kc0xs2.jpeg" alt="Lecrae - Restoration Album" class="grammy-image">
-                    <div class="grammy-content">
-                        <span class="grammy-badge">Nominated</span>
-                        <div class="grammy-category">Best Contemporary Christian Music Album</div>
-                        <h3 class="grammy-title">"Restoration"</h3>
-                        <p class="grammy-artist"><strong>Lecrae</strong></p>
-                    </div>
+            <div class="grammy-cards-grid">
+                <div class="grammy-card frost-card">
+                    <img src="6m606abmix.jpeg" alt="Lecrae - Restoration Album" class="grammy-card-image">
+                    <h3 class="service-title">2026 Grammy Nomination</h3>
+                    <p class="service-description">
+                        Best Contemporary Christian Music Album<br>
+                        <strong>"Restoration"</strong> — Lecrae<br><br>
+                        <em>A&R and EP Consulting by Whetstone ENT</em>
+                    </p>
                 </div>
 
-                <div class="grammy-card">
-                    <img src="IMG_2487.PNG" alt="Headphones - Lecrae feat. Killer Mike and T.I." class="grammy-image">
-                    <div class="grammy-content">
-                        <span class="grammy-badge">Nominated</span>
-                        <div class="grammy-category">Best Contemporary Christian Music Performance/Song</div>
-                        <h3 class="grammy-title">"Headphones"</h3>
-                        <p class="grammy-artist"><strong>Lecrae</strong> feat. <strong>Killer Mike</strong> & <strong>T.I.</strong></p>
-                    </div>
+                <div class="grammy-card frost-card">
+                    <img src="t3f1kc0xs2.jpeg" alt="Headphones - Lecrae feat. Killer Mike and T.I." class="grammy-card-image" style="object-position: top;">
+                    <h3 class="service-title">2026 Grammy Nomination</h3>
+                    <p class="service-description">
+                        Best Contemporary Christian Music Performance/Song<br>
+                        <strong>"Headphones"</strong> — Lecrae feat. Killer Mike & T.I.<br><br>
+                        <em>A&R and EP Consulting by Whetstone ENT</em>
+                    </p>
                 </div>
             </div>
         </div>
@@ -2377,7 +2299,7 @@
         <div class="footer-container">
             <div class="footer-grid">
                 <div>
-                    <div class="footer-logo">Whetstone</div>
+                    <div class="footer-logo">Whetstone ENT</div>
                     <p class="footer-tagline">Building the future of sound</p>
                 </div>
                 <div>
