@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whetstone Media Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #2a2a2a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* ═══════════════════════════════════════════
+           BRUSHED ALUMINUM PLAYER BODY
+           ═══════════════════════════════════════════ */
+        .whetstone-player {
+            width: 300px;
+            padding: 28px 25px 30px;
+            background: linear-gradient(
+                180deg,
+                #ededed 0%,
+                #d8d8d8 10%,
+                #c8c8c8 25%,
+                #d2d2d2 50%,
+                #c4c4c4 75%,
+                #b5b5b5 90%,
+                #a5a5a5 100%
+            );
+            border-radius: 22px;
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.45),
+                0 12px 24px rgba(0, 0, 0, 0.3),
+                inset 0 2px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s;
+        }
+
+        .whetstone-player:hover {
+            box-shadow:
+                0 35px 70px rgba(0, 0, 0, 0.5),
+                0 15px 30px rgba(0, 0, 0, 0.35),
+                inset 0 2px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brushed metal texture */
+        .whetstone-player::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 1px,
+                rgba(255, 255, 255, 0.02) 1px,
+                rgba(255, 255, 255, 0.02) 2px
+            );
+            pointer-events: none;
+        }
+
+        /* ═══════════════════════════════════════════
+           TRACK TITLE - EMBOSSED GREEN TEXT
+           ═══════════════════════════════════════════ */
+        .track-title {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 22px;
+            color: #4a7c4e;
+            text-shadow:
+                1px 1px 1px rgba(255, 255, 255, 0.85),
+                -1px -1px 1px rgba(0, 0, 0, 0.12);
+            letter-spacing: 0.3px;
+            position: relative;
+            z-index: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 10px;
+        }
+
+        /* ═══════════════════════════════════════════
+           GREEN GLASS ORB WITH AUDIO REACTIVITY
+           ═══════════════════════════════════════════ */
+        .orb-container {
+            width: 170px;
+            height: 170px;
+            margin: 0 auto 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-orb {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(
+                ellipse at 30% 30%,
+                rgba(180, 220, 140, 0.9) 0%,
+                rgba(100, 160, 80, 0.85) 25%,
+                rgba(70, 130, 60, 0.9) 50%,
+                rgba(50, 100, 45, 0.95) 75%,
+                rgba(35, 75, 35, 1) 100%
+            );
+            box-shadow:
+                inset -20px -20px 40px rgba(0, 0, 0, 0.4),
+                inset 15px 15px 30px rgba(200, 255, 200, 0.3),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.4),
+                0 8px 25px rgba(0, 0, 0, 0.3),
+                0 2px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .glass-orb.pulsing {
+            animation: pulse 0.15s ease-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .orb-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            opacity: 0.75;
+        }
+
+        /* Glass reflections */
+        .glass-orb::before {
+            content: '';
+            position: absolute;
+            top: 8%;
+            left: 15%;
+            width: 45%;
+            height: 35%;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.55) 0%,
+                rgba(255, 255, 255, 0.15) 50%,
+                transparent 100%
+            );
+            border-radius: 50%;
+            filter: blur(2px);
+            pointer-events: none;
+        }
+
+        .glass-orb::after {
+            content: '';
+            position: absolute;
+            top: 5%;
+            left: 22%;
+            width: 18%;
+            height: 12%;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            filter: blur(3px);
+            pointer-events: none;
+        }
+
+        /* ═══════════════════════════════════════════
+           PROGRESS BAR
+           ═══════════════════════════════════════════ */
+        .progress-container {
+            width: 100%;
+            margin-bottom: 18px;
+            padding: 0 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(
+                180deg,
+                #9a9a9a 0%,
+                #c5c5c5 50%,
+                #b0b0b0 100%
+            );
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+            box-shadow:
+                inset 0 1px 3px rgba(0, 0, 0, 0.25),
+                0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                #7aac7e 0%,
+                #4a7c4e 100%
+            );
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .progress-handle {
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(
+                ellipse at 30% 30%,
+                #8ac88e 0%,
+                #5a9c5e 50%,
+                #4a7c4e 100%
+            );
+            border-radius: 50%;
+            box-shadow:
+                0 2px 5px rgba(0, 0, 0, 0.35),
+                inset 0 1px 2px rgba(255, 255, 255, 0.4);
+            cursor: grab;
+            transition: transform 0.15s;
+        }
+
+        .progress-handle:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        /* Time Display */
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #606060;
+            margin-top: -12px;
+            margin-bottom: 8px;
+            padding: 0 12px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ═══════════════════════════════════════════
+           TRANSPORT CONTROLS
+           ═══════════════════════════════════════════ */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 20px;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .control-btn:active {
+            transform: scale(0.92);
+        }
+
+        .control-btn svg {
+            width: 26px;
+            height: 26px;
+            fill: #4a7c4e;
+            filter: drop-shadow(1px 1px 0 rgba(255, 255, 255, 0.75))
+                    drop-shadow(-0.5px -0.5px 0 rgba(0, 0, 0, 0.12));
+        }
+
+        .control-btn.play-pause svg {
+            width: 34px;
+            height: 34px;
+        }
+
+        /* ═══════════════════════════════════════════
+           VOLUME KNOB
+           ═══════════════════════════════════════════ */
+        .volume-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .volume-label {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .volume-knob-container {
+            width: 44px;
+            height: 44px;
+            position: relative;
+        }
+
+        .volume-knob {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(
+                145deg,
+                #d8d8d8 0%,
+                #b8b8b8 50%,
+                #a0a0a0 100%
+            );
+            box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.3),
+                inset 0 2px 3px rgba(255, 255, 255, 0.5),
+                inset 0 -2px 3px rgba(0, 0, 0, 0.1);
+            cursor: grab;
+            position: relative;
+            transition: box-shadow 0.2s;
+        }
+
+        .volume-knob:hover {
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.35),
+                inset 0 2px 3px rgba(255, 255, 255, 0.5),
+                inset 0 -2px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .volume-knob:active {
+            cursor: grabbing;
+        }
+
+        /* Knob indicator dot */
+        .volume-knob::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 10px;
+            background: linear-gradient(180deg, #5a9c5e, #4a7c4e);
+            border-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Knob ring markings */
+        .volume-ring {
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            background: conic-gradient(
+                from 220deg,
+                #4a7c4e 0deg,
+                #4a7c4e var(--volume-angle, 0deg),
+                transparent var(--volume-angle, 0deg),
+                transparent 280deg
+            );
+            -webkit-mask: radial-gradient(transparent 60%, black 62%);
+            mask: radial-gradient(transparent 60%, black 62%);
+            pointer-events: none;
+        }
+
+        .volume-value {
+            font-size: 11px;
+            color: #4a7c4e;
+            font-weight: 600;
+            min-width: 28px;
+            text-align: center;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        /* ═══════════════════════════════════════════
+           PLAYLIST DRAWER
+           ═══════════════════════════════════════════ */
+        .playlist-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 16px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 11px;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.2s, color 0.2s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .playlist-toggle:hover {
+            background: rgba(74, 124, 78, 0.12);
+            color: #4a7c4e;
+        }
+
+        .playlist-toggle svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+            transition: transform 0.3s;
+        }
+
+        .playlist-toggle.open svg {
+            transform: rotate(180deg);
+        }
+
+        .playlist-drawer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, margin 0.35s ease, padding 0.35s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .playlist-drawer.open {
+            max-height: 200px;
+            margin-top: 15px;
+            overflow-y: auto;
+        }
+
+        .playlist-drawer::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .playlist-drawer::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+        }
+
+        .playlist-drawer::-webkit-scrollbar-thumb {
+            background: rgba(74, 124, 78, 0.3);
+            border-radius: 3px;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .playlist-item:hover {
+            background: rgba(74, 124, 78, 0.12);
+            transform: translateX(3px);
+        }
+
+        .playlist-item.active {
+            background: rgba(74, 124, 78, 0.18);
+        }
+
+        .playlist-item-number {
+            font-size: 11px;
+            color: #888;
+            font-weight: 500;
+            min-width: 18px;
+        }
+
+        .playlist-item.active .playlist-item-number {
+            color: #4a7c4e;
+        }
+
+        .playlist-item-title {
+            font-size: 13px;
+            color: #444;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .playlist-item.active .playlist-item-title {
+            color: #4a7c4e;
+            font-weight: 500;
+        }
+
+        .playlist-item-duration {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .playlist-item-playing {
+            width: 8px;
+            height: 8px;
+            background: #4a7c4e;
+            border-radius: 50%;
+            animation: playingPulse 1s infinite;
+            display: none;
+        }
+
+        .playlist-item.playing .playlist-item-playing {
+            display: block;
+        }
+
+        @keyframes playingPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+    </style>
+</head>
+<body>
+    <div class="whetstone-player">
+        <div class="track-title" id="trackTitle">Whetstone Media Player</div>
+
+        <div class="orb-container">
+            <div class="glass-orb" id="glassOrb">
+                <canvas class="orb-canvas" id="orbCanvas"></canvas>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-track" id="progressTrack">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-handle" id="progressHandle"></div>
+            </div>
+        </div>
+
+        <div class="time-display">
+            <span id="currentTime">0:00</span>
+            <span id="duration">0:00</span>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn prev" id="prevBtn" title="Previous">
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                </svg>
+            </button>
+
+            <button class="control-btn play-pause" id="playPauseBtn" title="Play">
+                <svg viewBox="0 0 24 24" id="playIcon">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+                <svg viewBox="0 0 24 24" id="pauseIcon" style="display: none;">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+            </button>
+
+            <button class="control-btn next" id="nextBtn" title="Next">
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Volume Knob -->
+        <div class="volume-section">
+            <span class="volume-label">Vol</span>
+            <div class="volume-knob-container">
+                <div class="volume-ring" id="volumeRing"></div>
+                <div class="volume-knob" id="volumeKnob"></div>
+            </div>
+            <span class="volume-value" id="volumeValue">75</span>
+        </div>
+
+        <!-- Playlist Toggle -->
+        <button class="playlist-toggle" id="playlistToggle">
+            <span>Playlist</span>
+            <svg viewBox="0 0 24 24">
+                <path d="M7 10l5 5 5-5z"/>
+            </svg>
+        </button>
+
+        <!-- Playlist Drawer -->
+        <div class="playlist-drawer" id="playlistDrawer"></div>
+
+        <audio id="audioPlayer" preload="metadata" crossorigin="anonymous"></audio>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        // WHETSTONE MEDIA PLAYER - Enhanced Edition
+        // ═══════════════════════════════════════════════════════════════
+        class WhetstoneMediaPlayer {
+            constructor() {
+                // Audio elements
+                this.audio = document.getElementById('audioPlayer');
+
+                // UI elements
+                this.playPauseBtn = document.getElementById('playPauseBtn');
+                this.playIcon = document.getElementById('playIcon');
+                this.pauseIcon = document.getElementById('pauseIcon');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.progressTrack = document.getElementById('progressTrack');
+                this.progressFill = document.getElementById('progressFill');
+                this.progressHandle = document.getElementById('progressHandle');
+                this.currentTimeEl = document.getElementById('currentTime');
+                this.durationEl = document.getElementById('duration');
+                this.trackTitle = document.getElementById('trackTitle');
+                this.glassOrb = document.getElementById('glassOrb');
+
+                // Volume elements
+                this.volumeKnob = document.getElementById('volumeKnob');
+                this.volumeRing = document.getElementById('volumeRing');
+                this.volumeValue = document.getElementById('volumeValue');
+
+                // Playlist elements
+                this.playlistToggle = document.getElementById('playlistToggle');
+                this.playlistDrawer = document.getElementById('playlistDrawer');
+
+                // State
+                this.isPlaying = false;
+                this.isDragging = false;
+                this.isKnobDragging = false;
+                this.volume = 0.75;
+                this.knobAngle = 0;
+
+                // ═══════════════════════════════════════
+                // PLAYLIST - Add your tracks here!
+                // ═══════════════════════════════════════
+                this.playlist = [
+                    { title: 'Song 1', src: 'Song1.mp3' }
+                    // Add more tracks:
+                    // { title: 'Track Name', src: 'filename.mp3' },
+                ];
+                this.currentTrack = 0;
+
+                // Audio context for visualization
+                this.audioContext = null;
+                this.analyser = null;
+                this.dataArray = null;
+
+                this.initCanvas();
+                this.initVolume();
+                this.bindEvents();
+                this.renderPlaylist();
+                this.loadTrack(0);
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            // AUDIO-REACTIVE VISUALIZATION
+            // ═══════════════════════════════════════════════════════════════
+            initAudioContext() {
+                if (this.audioContext) return;
+
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                this.analyser = this.audioContext.createAnalyser();
+                this.analyser.fftSize = 256;
+
+                const source = this.audioContext.createMediaElementSource(this.audio);
+                source.connect(this.analyser);
+                this.analyser.connect(this.audioContext.destination);
+
+                this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+            }
+
+            initCanvas() {
+                this.canvas = document.getElementById('orbCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.canvas.width = 170;
+                this.canvas.height = 170;
+                this.time = 0;
+                this.bassLevel = 0;
+                this.midLevel = 0;
+                this.highLevel = 0;
+                this.animateOrb();
+            }
+
+            animateOrb() {
+                const ctx = this.ctx;
+                const w = this.canvas.width;
+                const h = this.canvas.height;
+                const cx = w / 2;
+                const cy = h / 2;
+
+                ctx.clearRect(0, 0, w, h);
+
+                // Get audio data if available
+                if (this.analyser && this.isPlaying) {
+                    this.analyser.getByteFrequencyData(this.dataArray);
+
+                    // Calculate frequency bands
+                    const bass = this.dataArray.slice(0, 10).reduce((a, b) => a + b, 0) / 10;
+                    const mid = this.dataArray.slice(10, 50).reduce((a, b) => a + b, 0) / 40;
+                    const high = this.dataArray.slice(50, 100).reduce((a, b) => a + b, 0) / 50;
+
+                    // Smooth transitions
+                    this.bassLevel += (bass / 255 - this.bassLevel) * 0.3;
+                    this.midLevel += (mid / 255 - this.midLevel) * 0.3;
+                    this.highLevel += (high / 255 - this.highLevel) * 0.3;
+                }
+
+                if (this.isPlaying) {
+                    this.time += 0.015 + this.bassLevel * 0.02;
+                }
+
+                // Dynamic base radius based on bass
+                const baseRadius = 45 + this.bassLevel * 15;
+
+                // Outer flowing pattern - reacts to bass
+                ctx.strokeStyle = 'rgba(200, 255, 200, ' + (0.3 + this.bassLevel * 0.3) + ')';
+                ctx.lineWidth = 2 + this.bassLevel * 1.5;
+
+                for (let i = 0; i < 6; i++) {
+                    ctx.beginPath();
+                    const angleOffset = (i * Math.PI) / 3 + this.time;
+                    const waveIntensity = 15 + this.midLevel * 20;
+
+                    for (let t = 0; t < Math.PI * 2; t += 0.04) {
+                        const r = baseRadius +
+                                  Math.sin(t * 3 + angleOffset) * waveIntensity +
+                                  Math.sin(t * 2 - this.time * 0.5) * (10 + this.highLevel * 15);
+                        const x = cx + Math.cos(t) * r;
+                        const y = cy + Math.sin(t) * r;
+
+                        if (t === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+
+                // Mid layer - reacts to mids
+                ctx.strokeStyle = 'rgba(220, 255, 220, ' + (0.25 + this.midLevel * 0.35) + ')';
+                ctx.lineWidth = 1.5 + this.midLevel;
+
+                for (let i = 0; i < 5; i++) {
+                    ctx.beginPath();
+                    const baseAngle = (i * Math.PI * 2) / 5 + this.time * 0.8;
+                    const midRadius = 35 + this.midLevel * 10;
+
+                    for (let t = 0; t < Math.PI * 2; t += 0.06) {
+                        const r = midRadius + Math.sin(t * 4 + baseAngle) * (12 + this.midLevel * 12);
+                        const x = cx + Math.cos(t) * r;
+                        const y = cy + Math.sin(t) * r;
+
+                        if (t === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+
+                // Inner glow - reacts to highs
+                ctx.strokeStyle = 'rgba(255, 255, 255, ' + (0.15 + this.highLevel * 0.3) + ')';
+                ctx.lineWidth = 1 + this.highLevel;
+
+                for (let i = 0; i < 4; i++) {
+                    ctx.beginPath();
+                    const baseAngle = (i * Math.PI) / 2 + this.time * 1.2;
+                    const innerRadius = 20 + this.highLevel * 8;
+
+                    for (let t = 0; t < Math.PI * 2; t += 0.08) {
+                        const r = innerRadius + Math.sin(t * 5 + baseAngle) * (8 + this.highLevel * 10);
+                        const x = cx + Math.cos(t) * r;
+                        const y = cy + Math.sin(t) * r;
+
+                        if (t === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+
+                // Center pulse on strong beats
+                if (this.bassLevel > 0.6) {
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 10 + this.bassLevel * 15, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(200, 255, 200, ' + (this.bassLevel * 0.3) + ')';
+                    ctx.fill();
+                }
+
+                requestAnimationFrame(() => this.animateOrb());
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            // VOLUME KNOB
+            // ═══════════════════════════════════════════════════════════════
+            initVolume() {
+                this.audio.volume = this.volume;
+                this.updateVolumeUI();
+            }
+
+            updateVolumeUI() {
+                const angle = this.volume * 280; // 280 degrees of rotation
+                this.volumeKnob.style.transform = 'rotate(' + (angle - 140) + 'deg)';
+                this.volumeRing.style.setProperty('--volume-angle', angle + 'deg');
+                this.volumeValue.textContent = Math.round(this.volume * 100);
+            }
+
+            handleKnobDrag(e) {
+                if (!this.isKnobDragging) return;
+
+                const rect = this.volumeKnob.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+                let angle = Math.atan2(clientY - centerY, clientX - centerX) * (180 / Math.PI);
+                angle = (angle + 90 + 360) % 360; // Normalize to 0-360, starting from top
+
+                // Map angle to volume (using 280 degree range, starting at -140)
+                if (angle > 320) angle = 0;
+                if (angle > 280) angle = 280;
+
+                this.volume = Math.max(0, Math.min(1, angle / 280));
+                this.audio.volume = this.volume;
+                this.updateVolumeUI();
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            // PLAYLIST - Using safe DOM methods
+            // ═══════════════════════════════════════════════════════════════
+            renderPlaylist() {
+                // Clear existing content safely
+                while (this.playlistDrawer.firstChild) {
+                    this.playlistDrawer.removeChild(this.playlistDrawer.firstChild);
+                }
+
+                // Build playlist items using DOM methods
+                this.playlist.forEach((track, i) => {
+                    const item = document.createElement('div');
+                    item.className = 'playlist-item' + (i === this.currentTrack ? ' active' : '');
+                    item.dataset.index = i;
+
+                    const playingIndicator = document.createElement('div');
+                    playingIndicator.className = 'playlist-item-playing';
+
+                    const number = document.createElement('span');
+                    number.className = 'playlist-item-number';
+                    number.textContent = String(i + 1).padStart(2, '0');
+
+                    const title = document.createElement('span');
+                    title.className = 'playlist-item-title';
+                    title.textContent = track.title;
+
+                    item.appendChild(playingIndicator);
+                    item.appendChild(number);
+                    item.appendChild(title);
+
+                    item.addEventListener('click', () => {
+                        this.loadTrack(i);
+                        if (this.isPlaying) this.audio.play();
+                    });
+
+                    this.playlistDrawer.appendChild(item);
+                });
+            }
+
+            updatePlaylistUI() {
+                const items = this.playlistDrawer.querySelectorAll('.playlist-item');
+                items.forEach((item, i) => {
+                    item.classList.toggle('active', i === this.currentTrack);
+                    item.classList.toggle('playing', i === this.currentTrack && this.isPlaying);
+                });
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            // EVENT BINDINGS
+            // ═══════════════════════════════════════════════════════════════
+            bindEvents() {
+                // Playback controls
+                this.playPauseBtn.addEventListener('click', () => this.togglePlay());
+                this.prevBtn.addEventListener('click', () => this.prevTrack());
+                this.nextBtn.addEventListener('click', () => this.nextTrack());
+
+                // Audio events
+                this.audio.addEventListener('timeupdate', () => this.updateProgress());
+                this.audio.addEventListener('loadedmetadata', () => this.updateDuration());
+                this.audio.addEventListener('ended', () => this.nextTrack());
+
+                // Progress bar
+                this.progressTrack.addEventListener('click', (e) => this.seek(e));
+                this.progressHandle.addEventListener('mousedown', () => this.isDragging = true);
+                document.addEventListener('mousemove', (e) => {
+                    if (this.isDragging) this.drag(e);
+                    if (this.isKnobDragging) this.handleKnobDrag(e);
+                });
+                document.addEventListener('mouseup', () => {
+                    this.isDragging = false;
+                    this.isKnobDragging = false;
+                });
+
+                // Volume knob
+                this.volumeKnob.addEventListener('mousedown', (e) => {
+                    this.isKnobDragging = true;
+                    this.handleKnobDrag(e);
+                });
+                this.volumeKnob.addEventListener('touchstart', (e) => {
+                    this.isKnobDragging = true;
+                    this.handleKnobDrag(e);
+                });
+                document.addEventListener('touchmove', (e) => {
+                    if (this.isKnobDragging) this.handleKnobDrag(e);
+                });
+                document.addEventListener('touchend', () => this.isKnobDragging = false);
+
+                // Playlist toggle
+                this.playlistToggle.addEventListener('click', () => {
+                    this.playlistToggle.classList.toggle('open');
+                    this.playlistDrawer.classList.toggle('open');
+                });
+            }
+
+            // ═══════════════════════════════════════════════════════════════
+            // PLAYBACK METHODS
+            // ═══════════════════════════════════════════════════════════════
+            loadTrack(index) {
+                if (index < 0) index = this.playlist.length - 1;
+                if (index >= this.playlist.length) index = 0;
+                this.currentTrack = index;
+
+                const track = this.playlist[index];
+                this.audio.src = track.src;
+                this.trackTitle.textContent = track.title || 'Whetstone Media Player';
+                this.updatePlaylistUI();
+            }
+
+            togglePlay() {
+                // Initialize audio context on first play (required by browsers)
+                if (!this.audioContext) {
+                    this.initAudioContext();
+                }
+
+                if (this.isPlaying) {
+                    this.audio.pause();
+                    this.playIcon.style.display = 'block';
+                    this.pauseIcon.style.display = 'none';
+                } else {
+                    this.audio.play();
+                    this.playIcon.style.display = 'none';
+                    this.pauseIcon.style.display = 'block';
+                    if (this.audioContext.state === 'suspended') {
+                        this.audioContext.resume();
+                    }
+                }
+                this.isPlaying = !this.isPlaying;
+                this.updatePlaylistUI();
+            }
+
+            prevTrack() {
+                this.loadTrack(this.currentTrack - 1);
+                if (this.isPlaying) this.audio.play();
+            }
+
+            nextTrack() {
+                this.loadTrack(this.currentTrack + 1);
+                if (this.isPlaying) this.audio.play();
+            }
+
+            updateProgress() {
+                const percent = (this.audio.currentTime / this.audio.duration) * 100 || 0;
+                this.progressFill.style.width = percent + '%';
+                this.progressHandle.style.left = percent + '%';
+                this.currentTimeEl.textContent = this.formatTime(this.audio.currentTime);
+            }
+
+            updateDuration() {
+                this.durationEl.textContent = this.formatTime(this.audio.duration);
+            }
+
+            formatTime(seconds) {
+                if (isNaN(seconds)) return '0:00';
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return mins + ':' + secs.toString().padStart(2, '0');
+            }
+
+            seek(e) {
+                const rect = this.progressTrack.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                this.audio.currentTime = percent * this.audio.duration;
+            }
+
+            drag(e) {
+                const rect = this.progressTrack.getBoundingClientRect();
+                let percent = (e.clientX - rect.left) / rect.width;
+                percent = Math.max(0, Math.min(1, percent));
+                this.audio.currentTime = percent * this.audio.duration;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            window.whetstonePlayer = new WhetstoneMediaPlayer();
+        });
+    </script>
+</body>
+</html>
