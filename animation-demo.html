@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whetstone Animation Demos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ice-light: #e8f5e9;
+            --ice-mid: #c8e6c9;
+            --matrix-green: #00ff41;
+            --text-dark: #1a2e1a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, var(--ice-mid) 0%, var(--ice-light) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 60px;
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .demo-section {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 60px 40px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-label {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--matrix-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .demo-description {
+            font-size: 14px;
+            margin-bottom: 30px;
+            opacity: 0.7;
+        }
+
+        /* Ice title styling from main site */
+        .ice-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: clamp(56px, 12vw, 120px);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: transparent;
+            background: linear-gradient(
+                180deg,
+                rgba(255,255,255,0.95) 0%,
+                rgba(232,245,233,0.9) 15%,
+                rgba(200,230,201,0.85) 30%,
+                rgba(165,214,167,0.8) 50%,
+                rgba(200,230,201,0.85) 70%,
+                rgba(232,245,233,0.9) 85%,
+                rgba(255,255,255,0.95) 100%
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow:
+                0 -1px 0 rgba(255,255,255,0.8),
+                0 1px 0 rgba(129,199,132,0.4),
+                0 2px 0 rgba(102,187,106,0.35),
+                0 3px 0 rgba(76,175,80,0.3),
+                0 4px 0 rgba(56,142,60,0.25),
+                0 5px 0 rgba(46,125,50,0.2);
+            filter: drop-shadow(0 0 0px rgba(0, 255, 65, 0));
+            transform: perspective(500px) rotateX(5deg);
+            transform-style: preserve-3d;
+            margin: 20px 0;
+        }
+
+        .replay-btn {
+            background: var(--matrix-green);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .replay-btn:hover {
+            background: #00cc33;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3);
+        }
+
+        .replay-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Particle effect container for demo 2 */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--matrix-green);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        @media (max-width: 768px) {
+            .demo-section {
+                padding: 40px 20px;
+            }
+
+            .ice-title {
+                font-size: 48px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧊 Whetstone Animation Demos</h1>
+        <p class="intro">Click the replay buttons to see each animation effect</p>
+
+        <!-- Demo 1: Frozen Crystallization -->
+        <div class="demo-section">
+            <div class="demo-label">Option 1: Frozen Crystallization</div>
+            <div class="demo-description">Letters freeze into existence one-by-one with 3D rotation</div>
+            <h1 class="ice-title" id="demo1">WHETSTONE</h1>
+            <button class="replay-btn" onclick="playDemo1()">↻ Replay</button>
+        </div>
+
+        <!-- Demo 2: Ice Shatter Entry -->
+        <div class="demo-section">
+            <div class="particles" id="particles2"></div>
+            <div class="demo-label">Option 2: Ice Shatter Entry</div>
+            <div class="demo-description">Explosive entry with ice-shard particles and elastic bounce</div>
+            <h1 class="ice-title" id="demo2">WHETSTONE</h1>
+            <button class="replay-btn" onclick="playDemo2()">↻ Replay</button>
+        </div>
+
+        <!-- Demo 3: Floating Ice -->
+        <div class="demo-section">
+            <div class="demo-label">Option 3: Floating Ice (Continuous)</div>
+            <div class="demo-description">Gentle float and rotation like ice on water - loops forever</div>
+            <h1 class="ice-title" id="demo3">WHETSTONE</h1>
+            <button class="replay-btn" onclick="playDemo3()">↻ Replay</button>
+        </div>
+
+        <!-- Demo 4: Frost Spread -->
+        <div class="demo-section">
+            <div class="demo-label">Option 4: Frost Spread ⭐ Recommended</div>
+            <div class="demo-description">Frost grows across letters with blur-to-sharp transition and shimmer</div>
+            <h1 class="ice-title" id="demo4">WHETSTONE</h1>
+            <button class="replay-btn" onclick="playDemo4()">↻ Replay</button>
+        </div>
+    </div>
+
+    <!-- GSAP Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <script>
+        // Helper function to safely split text into spans
+        function splitTextToSpans(element, text) {
+            element.textContent = '';
+            for (let i = 0; i < text.length; i++) {
+                const span = document.createElement('span');
+                span.style.display = 'inline-block';
+                span.textContent = text[i];
+                element.appendChild(span);
+            }
+            return element.querySelectorAll('span');
+        }
+
+        // Demo 1: Frozen Crystallization
+        function playDemo1() {
+            const title = document.getElementById('demo1');
+            const letters = splitTextToSpans(title, 'WHETSTONE');
+
+            gsap.fromTo(letters,
+                {
+                    opacity: 0,
+                    scale: 0,
+                    rotationY: 180,
+                    transformOrigin: "center center"
+                },
+                {
+                    duration: 1.5,
+                    opacity: 1,
+                    scale: 1,
+                    rotationY: 0,
+                    ease: "back.out(1.7)",
+                    stagger: 0.1
+                }
+            );
+        }
+
+        // Demo 2: Ice Shatter Entry
+        function playDemo2() {
+            const title = document.getElementById('demo2');
+            const particlesContainer = document.getElementById('particles2');
+
+            // Create particles safely
+            particlesContainer.textContent = '';
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particlesContainer.appendChild(particle);
+            }
+
+            // Animate title
+            gsap.fromTo(title,
+                {
+                    y: -200,
+                    rotationX: -90,
+                    opacity: 0,
+                    scale: 2,
+                    filter: "blur(20px)"
+                },
+                {
+                    duration: 2,
+                    y: 0,
+                    rotationX: 0,
+                    opacity: 1,
+                    scale: 1,
+                    filter: "blur(0px)",
+                    ease: "elastic.out(1, 0.5)"
+                }
+            );
+
+            // Animate particles
+            const particles = particlesContainer.querySelectorAll('.particle');
+            particles.forEach((particle, i) => {
+                const angle = (Math.PI * 2 * i) / particles.length;
+                const distance = 200 + Math.random() * 100;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+
+                gsap.fromTo(particle,
+                    { x: 0, y: 0, opacity: 0 },
+                    {
+                        duration: 1.5,
+                        x: x,
+                        y: y,
+                        opacity: 1,
+                        ease: "power2.out",
+                        delay: 0.5,
+                        onComplete: () => {
+                            gsap.to(particle, {
+                                duration: 0.5,
+                                opacity: 0
+                            });
+                        }
+                    }
+                );
+            });
+        }
+
+        // Demo 3: Floating Ice
+        function playDemo3() {
+            const title = document.getElementById('demo3');
+
+            // Kill existing animation
+            gsap.killTweensOf(title);
+
+            // Reset to center
+            gsap.set(title, { y: 0, rotationZ: 0 });
+
+            // Start continuous float
+            gsap.to(title, {
+                y: -15,
+                rotationZ: 2,
+                duration: 3,
+                ease: "sine.inOut",
+                repeat: -1,
+                yoyo: true
+            });
+        }
+
+        // Demo 4: Frost Spread
+        function playDemo4() {
+            const title = document.getElementById('demo4');
+            const letters = splitTextToSpans(title, 'WHETSTONE');
+
+            gsap.fromTo(letters,
+                {
+                    opacity: 0,
+                    x: -30,
+                    filter: "blur(8px)",
+                    textShadow: "0 0 40px rgba(0,255,65,0.8)"
+                },
+                {
+                    duration: 1.2,
+                    opacity: 1,
+                    x: 0,
+                    filter: "blur(0px)",
+                    textShadow: "0 -1px 0 rgba(255,255,255,0.8), 0 1px 0 rgba(129,199,132,0.4), 0 2px 0 rgba(102,187,106,0.35), 0 3px 0 rgba(76,175,80,0.3), 0 4px 0 rgba(56,142,60,0.25), 0 5px 0 rgba(46,125,50,0.2)",
+                    ease: "power3.out",
+                    stagger: {
+                        each: 0.08,
+                        from: "start"
+                    }
+                }
+            );
+        }
+
+        // Auto-play all animations on load
+        window.addEventListener('load', () => {
+            setTimeout(() => playDemo1(), 500);
+            setTimeout(() => playDemo2(), 2500);
+            setTimeout(() => playDemo3(), 5000);
+            setTimeout(() => playDemo4(), 7000);
+        });
+    </script>
+</body>
+</html>

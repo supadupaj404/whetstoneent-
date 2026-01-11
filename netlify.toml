@@ -1,0 +1,16 @@
+[build]
+  functions = "netlify/functions"
+  publish = "."
+
+[functions]
+  node_bundler = "esbuild"
+
+[dev]
+  port = 8888
+  autoLaunch = false
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"

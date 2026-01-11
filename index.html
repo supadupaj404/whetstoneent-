@@ -1257,10 +1257,7 @@
 
         .player-section {
             padding: 100px 20px 120px;
-            background:
-                radial-gradient(ellipse at 50% 30%, #3a3a3a 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 80%, #2a2a2a 0%, transparent 50%),
-                #1a1a1a;
+            background: var(--matrix-black);
             position: relative;
             display: flex;
             flex-direction: column;
@@ -1268,10 +1265,27 @@
             min-height: auto;
         }
 
+        /* Matrix grid overlay for player section */
+        .player-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
+
         .player-section .section-label {
-            color: var(--jade-glow);
-            text-shadow: 0 0 10px var(--glow-soft);
-            font-family: 'Outfit', sans-serif;
+            color: var(--matrix-green);
+            text-shadow: 0 0 10px rgba(0,255,65,0.5);
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            letter-spacing: 2px;
         }
 
         .player-section .section-header {
@@ -1279,9 +1293,16 @@
         }
 
         .player-section .section-title {
-            color: var(--jade-glow);
-            font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 20px var(--glow-soft);
+            color: var(--text-light);
+            background: linear-gradient(
+                180deg,
+                rgba(255,255,255,0.95) 0%,
+                rgba(200,255,200,0.9) 50%,
+                rgba(0,255,65,0.8) 100%
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         /* Premium Player CSS Variables */
@@ -1919,7 +1940,7 @@
         <div class="section-container">
             <div class="section-header">
                 <div class="section-label">// Now Playing</div>
-                <h2 class="section-title">Listen</h2>
+                <h2 class="section-title ice-title">Listen</h2>
             </div>
         </div>
 

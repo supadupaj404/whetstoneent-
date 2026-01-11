@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Glass Text - Whetstone Style</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Anton&family=Oswald:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+            background: linear-gradient(180deg, #c8e6c9 0%, #e8f5e9 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .intro-text {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 16px;
+            color: #1a2e1a;
+        }
+
+        .demo-container {
+            width: 100%;
+            max-width: 1400px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            padding: 80px 40px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .demo-label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: #00ff41;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* Base glass text style */
+        .glass-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(60px, 15vw, 180px);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(232, 245, 233, 0.15);
+            position: relative;
+            margin: 40px 0;
+
+            /* Create the hollow 3D glass effect with multiple strokes */
+            -webkit-text-stroke: 3px rgba(255, 255, 255, 0.8);
+            text-stroke: 3px rgba(255, 255, 255, 0.8);
+
+            /* Inner shadows for depth */
+            text-shadow:
+                /* Inner highlight (top-left) */
+                -2px -2px 4px rgba(255, 255, 255, 0.9),
+                /* Inner shadow (bottom-right) */
+                2px 2px 4px rgba(129, 199, 132, 0.6),
+                /* Depth layer 1 */
+                0 3px 6px rgba(102, 187, 106, 0.4),
+                /* Depth layer 2 */
+                0 6px 12px rgba(76, 175, 80, 0.3),
+                /* Outer glow */
+                0 0 30px rgba(200, 230, 201, 0.5),
+                /* Far shadow for 3D effect */
+                0 10px 25px rgba(129, 199, 132, 0.3);
+
+            filter: drop-shadow(0 8px 16px rgba(129, 199, 132, 0.3));
+        }
+
+        /* Option 1: Shimmer sweep across edges */
+        @keyframes shimmer-sweep {
+            0% {
+                -webkit-text-stroke: 3px rgba(255, 255, 255, 0.8);
+                filter: drop-shadow(0 8px 16px rgba(129, 199, 132, 0.3));
+            }
+            50% {
+                -webkit-text-stroke: 3px rgba(255, 255, 255, 1);
+                filter: drop-shadow(0 8px 16px rgba(129, 199, 132, 0.3))
+                        drop-shadow(0 0 20px rgba(0, 255, 65, 0.6));
+            }
+            100% {
+                -webkit-text-stroke: 3px rgba(255, 255, 255, 0.8);
+                filter: drop-shadow(0 8px 16px rgba(129, 199, 132, 0.3));
+            }
+        }
+
+        .glass-text-shimmer {
+            animation: shimmer-sweep 3s ease-in-out infinite;
+        }
+
+        /* Option 2: Pulsing glow on edges */
+        @keyframes edge-glow-pulse {
+            0%, 100% {
+                -webkit-text-stroke: 3px rgba(255, 255, 255, 0.8);
+                filter: drop-shadow(0 8px 16px rgba(129, 199, 132, 0.3))
+                        drop-shadow(0 0 10px rgba(0, 255, 65, 0));
+            }
+            50% {
+                -webkit-text-stroke: 3px rgba(200, 255, 200, 1);
+                filter: drop-shadow(0 8px 16px rgba(129, 199, 132, 0.3))
+                        drop-shadow(0 0 30px rgba(0, 255, 65, 0.8))
+                        drop-shadow(0 0 60px rgba(0, 255, 65, 0.4));
+            }
+        }
+
+        .glass-text-glow {
+            animation: edge-glow-pulse 2.5s ease-in-out infinite;
+        }
+
+        /* Option 3: Sparkle effect with pseudo-elements */
+        .glass-text-sparkle {
+            position: relative;
+        }
+
+        .glass-text-sparkle::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            letter-spacing: inherit;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0);
+            z-index: 2;
+            animation: sparkle-shine 4s linear infinite;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                transparent 40%,
+                rgba(255, 255, 255, 0.9) 50%,
+                transparent 60%,
+                transparent 100%
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            background-size: 200% 100%;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes sparkle-shine {
+            0% {
+                background-position: -200% 0;
+                -webkit-text-stroke: 1px rgba(255, 255, 255, 0);
+            }
+            50% {
+                background-position: 0% 0;
+                -webkit-text-stroke: 2px rgba(255, 255, 255, 1);
+            }
+            100% {
+                background-position: 200% 0;
+                -webkit-text-stroke: 1px rgba(255, 255, 255, 0);
+            }
+        }
+
+        /* Option 4: Rainbow shimmer on edges */
+        @keyframes rainbow-edge {
+            0% {
+                -webkit-text-stroke: 3px rgba(255, 255, 255, 0.8);
+                filter: drop-shadow(0 8px 16px rgba(129, 199, 132, 0.3)) hue-rotate(0deg);
+            }
+            25% {
+                -webkit-text-stroke: 3px rgba(200, 255, 220, 0.9);
+            }
+            50% {
+                -webkit-text-stroke: 3px rgba(180, 255, 240, 1);
+                filter: drop-shadow(0 8px 16px rgba(129, 199, 132, 0.3))
+                        hue-rotate(30deg)
+                        drop-shadow(0 0 25px rgba(0, 255, 65, 0.6));
+            }
+            75% {
+                -webkit-text-stroke: 3px rgba(200, 255, 220, 0.9);
+            }
+            100% {
+                -webkit-text-stroke: 3px rgba(255, 255, 255, 0.8);
+                filter: drop-shadow(0 8px 16px rgba(129, 199, 132, 0.3)) hue-rotate(0deg);
+            }
+        }
+
+        .glass-text-rainbow {
+            animation: rainbow-edge 4s ease-in-out infinite;
+        }
+
+        .subtitle {
+            font-size: clamp(18px, 4vw, 48px);
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            color: rgba(232, 245, 233, 0.6);
+            margin-top: -20px;
+        }
+
+        .controls {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .replay-btn {
+            background: #00ff41;
+            color: #1a2e1a;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .replay-btn:hover {
+            background: #00cc33;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .demo-container {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="intro-text">
+        <h2>3D Hollow Glass Text - Edge Animation Options</h2>
+        <p style="margin-top: 10px; opacity: 0.7;">Recreating your reference image style</p>
+    </div>
+
+    <!-- Option 1: Shimmer Sweep -->
+    <div class="demo-container">
+        <div class="demo-label">Option 1: Shimmer Sweep</div>
+        <div class="glass-text glass-text-shimmer">WHETSTONE</div>
+        <div class="subtitle">ENTERTAINMENT</div>
+        <div style="margin-top: 20px; font-size: 14px; opacity: 0.7;">
+            Gentle wave of light sweeps across the edges
+        </div>
+    </div>
+
+    <!-- Option 2: Edge Glow Pulse -->
+    <div class="demo-container">
+        <div class="demo-label">Option 2: Edge Glow Pulse</div>
+        <div class="glass-text glass-text-glow">WHETSTONE</div>
+        <div class="subtitle">ENTERTAINMENT</div>
+        <div style="margin-top: 20px; font-size: 14px; opacity: 0.7;">
+            Pulsing green glow emanates from the edges
+        </div>
+    </div>
+
+    <!-- Option 3: Sparkle Shine -->
+    <div class="demo-container">
+        <div class="demo-label">Option 3: Traveling Sparkle ⭐</div>
+        <div class="glass-text glass-text-sparkle" data-text="WHETSTONE">WHETSTONE</div>
+        <div class="subtitle">ENTERTAINMENT</div>
+        <div style="margin-top: 20px; font-size: 14px; opacity: 0.7;">
+            Bright shine travels across the letter edges
+        </div>
+    </div>
+
+    <!-- Option 4: Rainbow Shimmer -->
+    <div class="demo-container">
+        <div class="demo-label">Option 4: Subtle Rainbow Shimmer</div>
+        <div class="glass-text glass-text-rainbow">WHETSTONE</div>
+        <div class="subtitle">ENTERTAINMENT</div>
+        <div style="margin-top: 20px; font-size: 14px; opacity: 0.7;">
+            Edges shift through ice-blue to white shimmer
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px; opacity: 0.6; font-size: 14px;">
+        💡 All animations are pure CSS - no JavaScript needed
+    </div>
+</body>
+</html>

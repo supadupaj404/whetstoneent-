@@ -1,0 +1,253 @@
+<!-- Inline SVG version: gradient glass stroke + subtle neon edge + soft bloom.
+     Drop into a blank HTML file. No images. Pure HTML+CSS+SVG. -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>WHETSTONE Hero (SVG)</title>
+<style>
+  :root{
+    --bg: #e8f5e9;
+    --iceA: rgba(200, 230, 201, 0.30);
+    --iceB: rgba(200, 230, 201, 0.65);
+    --frost: #C8E6C9;
+    --glow: #00ff41;
+  }
+
+  body{
+    margin:0;
+    background:#111;
+    display:grid;
+    place-items:center;
+    min-height:100vh;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  .hero{
+    width:min(2400px, 100vw);
+    aspect-ratio: 2400 / 1260;
+    position:relative;
+    overflow:hidden;
+    background:
+      radial-gradient(120% 120% at 50% 10%, #f6fff7 0%, var(--bg) 45%, #dff0e2 100%);
+  }
+
+  /* soft studio diffusion */
+  .hero::before{
+    content:"";
+    position:absolute; inset:-18%;
+    background:
+      radial-gradient(40% 30% at 50% 18%, rgba(255,255,255,.65) 0%, rgba(255,255,255,0) 70%),
+      radial-gradient(32% 26% at 30% 38%, rgba(255,255,255,.18) 0%, rgba(255,255,255,0) 70%),
+      radial-gradient(32% 26% at 70% 40%, rgba(255,255,255,.16) 0%, rgba(255,255,255,0) 70%);
+    filter: blur(22px);
+    opacity:.85;
+    pointer-events:none;
+  }
+
+  svg{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+  }
+
+  /* Secondary line (etched frosted) */
+  .sub{
+    font-weight: 650;
+    letter-spacing: 0.55em;
+    text-transform: uppercase;
+    fill: rgba(80,110,90,0.26);
+    filter: url(#etch);
+  }
+
+  /* Centering helper for SVG text */
+  .t-center{
+    dominant-baseline: middle;
+    text-anchor: middle;
+  }
+</style>
+</head>
+<body>
+<section class="hero" aria-label="Whetstone hero">
+  <svg viewBox="0 0 2400 1260" role="img" aria-label="WHETSTONE ENTERTAINMENT">
+    <defs>
+      <!-- Glass stroke gradient (ice green + white spec) -->
+      <linearGradient id="glassStroke" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0"   stop-color="rgba(255,255,255,0.70)"/>
+        <stop offset="0.18" stop-color="rgba(200,230,201,0.55)"/>
+        <stop offset="0.45" stop-color="rgba(255,255,255,0.35)"/>
+        <stop offset="0.62" stop-color="rgba(0,255,65,0.18)"/>
+        <stop offset="1"   stop-color="rgba(200,230,201,0.55)"/>
+      </linearGradient>
+
+      <!-- Inner highlight gradient (thin) -->
+      <linearGradient id="innerHighlight" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="rgba(255,255,255,0.10)"/>
+        <stop offset="0.35" stop-color="rgba(255,255,255,0.65)"/>
+        <stop offset="1" stop-color="rgba(255,255,255,0.12)"/>
+      </linearGradient>
+
+      <!-- Subtle refraction band overlay clipped to the stroke -->
+      <linearGradient id="refract" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="rgba(255,255,255,0)"/>
+        <stop offset="0.18" stop-color="rgba(255,255,255,0.40)"/>
+        <stop offset="0.36" stop-color="rgba(200,230,201,0.10)"/>
+        <stop offset="0.52" stop-color="rgba(255,255,255,0.22)"/>
+        <stop offset="0.70" stop-color="rgba(0,255,65,0.12)"/>
+        <stop offset="0.86" stop-color="rgba(255,255,255,0.10)"/>
+        <stop offset="1" stop-color="rgba(255,255,255,0)"/>
+      </linearGradient>
+
+      <!-- Outer bloom (soft studio + tiny neon) -->
+      <filter id="bloom" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="blur"/>
+        <feColorMatrix in="blur" type="matrix"
+          values="
+            1 0 0 0 0
+            0 1 0 0 0
+            0 0 1 0 0
+            0 0 0 0.55 0" result="soft"/>
+        <feMerge>
+          <feMergeNode in="soft"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+
+      <!-- Very light neon edge glow -->
+      <filter id="edgeGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3.5" result="g"/>
+        <feColorMatrix type="matrix" in="g"
+          values="
+            0 0 0 0 0
+            0 1 0 0 0
+            0 0 0 0 0
+            0 0 0 0.22 0" result="greenGlow"/>
+        <feMerge>
+          <feMergeNode in="greenGlow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+
+      <!-- Etched effect for ENTERTAINMENT -->
+      <filter id="etch" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="a"/>
+        <feOffset in="a" dx="0" dy="1" result="down"/>
+        <feOffset in="a" dx="0" dy="-1" result="up"/>
+        <feColorMatrix in="down" type="matrix"
+          values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.20 0" result="light"/>
+        <feColorMatrix in="up" type="matrix"
+          values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.10 0" result="shade"/>
+        <feMerge>
+          <feMergeNode in="light"/>
+          <feMergeNode in="shade"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+
+      <!-- ClipPath used to confine refraction bands to the stroked outline -->
+      <!-- Note: SVG can't clip to stroke directly, so we use a duplicate thick stroke as a clip. -->
+      <clipPath id="strokeClip" clipPathUnits="userSpaceOnUse">
+        <text x="1200" y="590"
+              class="t-center"
+              font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+              font-size="260"
+              font-weight="800"
+              letter-spacing="8">
+          WHETSTONE
+        </text>
+      </clipPath>
+    </defs>
+
+    <!-- WHETSTONE: build "tubular glass outline" with stacked strokes -->
+    <g filter="url(#bloom)">
+      <!-- Base thick glass stroke -->
+      <text x="1200" y="590"
+            class="t-center"
+            font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+            font-size="260"
+            font-weight="800"
+            letter-spacing="8"
+            fill="transparent"
+            stroke="url(#glassStroke)"
+            stroke-width="26"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            opacity="0.95">
+        WHETSTONE
+      </text>
+
+      <!-- Frosted accent (adds depth like bevel) -->
+      <text x="1200" y="590"
+            class="t-center"
+            font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+            font-size="260"
+            font-weight="800"
+            letter-spacing="8"
+            fill="transparent"
+            stroke="rgba(200,230,201,0.22)"
+            stroke-width="34"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            opacity="0.35">
+        WHETSTONE
+      </text>
+
+      <!-- Inner highlight stroke -->
+      <text x="1200" y="590"
+            class="t-center"
+            font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+            font-size="260"
+            font-weight="800"
+            letter-spacing="8"
+            fill="transparent"
+            stroke="url(#innerHighlight)"
+            stroke-width="10"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            opacity="0.70">
+        WHETSTONE
+      </text>
+
+      <!-- Very light neon edge glow on outer edges only (approx) -->
+      <g filter="url(#edgeGlow)" opacity="0.60">
+        <text x="1200" y="590"
+              class="t-center"
+              font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+              font-size="260"
+              font-weight="800"
+              letter-spacing="8"
+              fill="transparent"
+              stroke="rgba(0,255,65,0.22)"
+              stroke-width="22"
+              stroke-linejoin="round"
+              stroke-linecap="round">
+          WHETSTONE
+        </text>
+      </g>
+
+      <!-- Refraction bands (clipped to text shape for a glassy "moving light" look) -->
+      <g clip-path="url(#strokeClip)" opacity="0.45">
+        <rect x="550" y="430" width="1300" height="360" fill="url(#refract)"/>
+      </g>
+
+      <!-- Sparse condensation droplets (small highlights) -->
+      <g opacity="0.55">
+        <circle cx="805" cy="570" r="6" fill="rgba(255,255,255,0.40)"/>
+        <circle cx="852" cy="612" r="4.5" fill="rgba(255,255,255,0.32)"/>
+        <circle cx="1118" cy="525" r="6.5" fill="rgba(255,255,255,0.38)"/>
+        <circle cx="1495" cy="585" r="5.5" fill="rgba(255,255,255,0.30)"/>
+        <circle cx="1685" cy="540" r="6" fill="rgba(255,255,255,0.36)"/>
+      </g>
+    </g>
+
+    <!-- ENTERTAINMENT: etched frosted acrylic -->
+    <text x="1200" y="720"
+          class="t-center sub"
+          font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+          font-size="44">
+      ENTERTAINMENT
+    </text>
+  </svg>
+</section>
+</body>
+</html>
