@@ -1367,12 +1367,22 @@
                 inset -2px 0 0 rgba(0, 0, 0, 0.03);
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
             transform: perspective(800px) rotateX(10deg) rotateY(-10deg);
-            animation: subtleFloat 4s ease-in-out infinite;
+            animation: floatBob 3.5s ease-in-out infinite;
         }
 
-        @keyframes subtleFloat {
-            0%, 100% { transform: perspective(800px) rotateX(10deg) rotateY(-10deg) translateY(0px); }
-            50% { transform: perspective(800px) rotateX(10deg) rotateY(-10deg) translateY(-8px); }
+        @keyframes floatBob {
+            0%, 100% {
+                transform: perspective(800px) rotateX(10deg) rotateY(-10deg) translateY(0px) rotateZ(0deg);
+            }
+            25% {
+                transform: perspective(800px) rotateX(11deg) rotateY(-9deg) translateY(-8px) rotateZ(0.5deg);
+            }
+            50% {
+                transform: perspective(800px) rotateX(10deg) rotateY(-11deg) translateY(-16px) rotateZ(0deg);
+            }
+            75% {
+                transform: perspective(800px) rotateX(9deg) rotateY(-10deg) translateY(-8px) rotateZ(-0.5deg);
+            }
         }
 
         .whetstone-player:hover {
@@ -1948,7 +1958,7 @@
         <div class="player-stage">
             <div class="whetstone-player">
                 <div class="player-title">Whetstone Media Player</div>
-                <div class="track-title" id="trackTitle">Song 1</div>
+                <div class="track-title" id="trackTitle">BEAM - Southside (Out Now)</div>
 
                 <div class="orb-container">
                     <div class="orb-housing"></div>
@@ -2505,8 +2515,7 @@
 
                 // YOUR PLAYLIST - Add tracks here
                 this.playlist = [
-                    { title: 'Song 1', src: 'Song1.mp3' }
-                    // { title: 'Another Track', src: 'track.mp3' },
+                    { title: 'BEAM - Southside (Out Now)', src: 'Song1.mp3' }
                 ];
                 this.currentTrack = 0;
 
