@@ -36,7 +36,7 @@ python3 -m http.server 8080
 # Opens http://localhost:8080
 ```
 
-**Deployment:** Cloudflare Pages (auto-deploys from GitHub on push to master)
+**Deployment:** Netlify (auto-deploys from GitHub on push to master)
 
 ## Key CSS Variables
 
